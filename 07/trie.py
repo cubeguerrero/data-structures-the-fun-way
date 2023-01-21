@@ -18,6 +18,9 @@ class TrieNode:
         self.children = {}
         self.is_entry = False
 
+    def __str__(self):
+        return f'TrieNode({self.value}, {self.children}, {self.is_entry})'
+
     def search(current, target, index):
         if index == len(target):
             if current.is_entry:
@@ -44,10 +47,35 @@ class TrieNode:
                 current.children[next_letter] = TrieNode(value=next_letter)
                 TrieNode.add(current.children[next_letter], new_word, index + 1)
 
+    def delete(current, target, index):
+        if index == len(target):
+            if current.is_entry:
+                current.is_entry = False
+        else:
+            next_letter = target[index]
+            next_child = current.children[next_letter]
+            if next_child:
+                if TrieNode.delete(next_child, target, index + 1):
+                    current.children[next_letter] = None
 
+        if current.is_entry:
+            return False
+
+        for c in current.children:
+            if current.children[c]:
+                return False
 
 
 if __name__ == '__main__':
     t = Trie()
-    t.add('add')
-    print(t.search('ad'))
+    t.add('eek')
+    t.add('egads')
+    t.add('yikes')
+    t.add('yippee')
+    t.add('zonk')
+    t.add('zounds')
+    print(t.search('yippee'))
+    print(t.search('yike'))
+    t.delete('yippee')
+    print(t.search('yippee'))
+    
